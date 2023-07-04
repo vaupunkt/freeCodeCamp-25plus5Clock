@@ -31,30 +31,22 @@ export default function Timer({
 	const [isRunning, setIsRunning] = useState(false);
 
 	useEffect(() => {
+		const beep = document.getElementById("beep");
 		if (isRunning && timeLeft > 0) {
 			const intervalId = setInterval(() => {
 				setTimeLeft(timeLeft - 1);
 			}, 1000);
 			return () => clearInterval(intervalId);
 		} else if (isRunning && timeLeft === 0) {
-			setTimeLeft(0);
-			setTimeout(() => {
-				setIsSession(!isSession);
-				setTimeLeft(isSession ? breakLength * 60 : sessionLength * 60);
-			}, 2000);
-		}
-	}, [isRunning, setTimeLeft, timeLeft, isSession, breakLength, sessionLength]);
-
-	useEffect(() => {
-		if (timeLeft === 0) {
-			const beep = document.getElementById("beep");
 			beep.play();
 			setTimeout(() => {
 				beep.pause();
 				beep.currentTime = 0;
+				setIsSession(!isSession);
+				setTimeLeft(isSession ? breakLength * 60 : sessionLength * 60);
 			}, 1500);
 		}
-	}, [timeLeft]);
+	}, [isRunning, setTimeLeft, timeLeft, isSession, breakLength, sessionLength]);
 
 	function onStartStop() {
 		setIsRunning(!isRunning);
