@@ -37,13 +37,13 @@ export default function Timer({
 				setTimeLeft(timeLeft - 1);
 			}, 1000);
 			return () => clearInterval(intervalId);
-		} else if (isRunning && timeLeft === 0) {
+		} else if (isRunning && timeLeft <= 0) {
+			beep.currentTime = 0;
 			beep.play();
 			setTimeout(() => {
-				beep.pause();
-				beep.currentTime = 0;
 				setIsSession(!isSession);
 				setTimeLeft(isSession ? breakLength * 60 : sessionLength * 60);
+				beep.pause();
 			}, 1500);
 		}
 	}, [isRunning, setTimeLeft, timeLeft, isSession, breakLength, sessionLength]);
@@ -53,14 +53,14 @@ export default function Timer({
 	}
 
 	function onReset() {
+		const beep = document.getElementById("beep");
+		beep.pause();
+		beep.currentTime = 0;
 		setIsRunning(false);
 		setIsSession(true);
 		setTimeLeft(25 * 60);
 		setBreakLength(5);
 		setSessionLength(25);
-		const beep = document.getElementById("beep");
-		beep.pause();
-		beep.currentTime = 0;
 	}
 
 	return (
